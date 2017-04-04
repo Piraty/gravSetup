@@ -20,6 +20,8 @@ readonly SUB_DIR="/grav" #/grav
 readonly WEBROOT="/srv/www/lighttpd"
 readonly WEBSERVER_CRED="_lighttpd"
 
+readonly USERNAME="user"
+
 
 
 ## config files
@@ -112,4 +114,17 @@ xi -y lighttpd php php-cgi php-gd
 
 ## install grav
 	## set permissions
-	chown -R ${WEBSERVER_CRED}:${WEBSERVER_CRED} ${WEBROOT}
+	
+	chown -R ${USERNAME}:${WEBSERVER_CRED} ${WEBROOT}/${SUB_DIR}
+	
+	cd ${WEBROOT}/${SUB_DIR}
+	find . -type f | xargs chmod 664
+	find ./bin -type f | xargs chmod 775
+	find . -type d | xargs chmod 775
+	find . -type d | xargs chmod +s
+
+
+	
+	echo "---- DONE"
+	echo "now: set the umask for your user (${USERNAME})to 0002"
+	echo "even better: add it to .bashrc or similar"
