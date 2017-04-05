@@ -115,7 +115,9 @@ xi -y lighttpd php php-cgi php-gd
 	find . -type d | xargs chmod 775
 	find . -type d | xargs chmod +s
 
-
+	## fix curl problem
+	_curlFix="\ \ method: 'fopen'"
+	sed -i "/gpm:/a  ${_curlFix}" ${WEBROOT}/${SUB_DIR}/user/config/system.yaml
 	
 	echo "---- DONE"
 	echo "now: set the umask for your user (${USERNAME})to 0002"
