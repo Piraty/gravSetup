@@ -5,14 +5,6 @@
 ## run as root
 ## 
 
-## BUGS
-## 	CURL error code0 within grav-admin (during update of grav or template)
-
-## TODO
-##
-## -) change curl to wget some day
-##
-
 ## modify this if needed
 readonly GRAV_VERSION="1.2.0"
 readonly SUB_DIR="/grav" #/grav
