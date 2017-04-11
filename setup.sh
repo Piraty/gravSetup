@@ -1,17 +1,16 @@
 #!/bin/sh
 
-## date: 2017-04-03
+## date: 2017-04-11
 ## 
 ## run as root
 ## 
 
 ## modify this if needed
 readonly GRAV_VERSION="1.2.0"
-readonly SUB_DIR="/grav" #/grav
+readonly SUB_DIR="" #/grav
 
 readonly WEBROOT="/srv/www/lighttpd"
-readonly WEBSERVER_CRED="_lighttpd"
-
+readonly WEBSERVER_GROUP="_lighttpd"
 readonly USERNAME="user"
 
 
@@ -29,14 +28,38 @@ readonly _GRAV_DISTFILE="https://github.com/getgrav/grav/releases/download/${GRA
 xbps-install -Syu && xbps-install -Syu && xbps-install -y xtools
 
 ## some tools needed
-xi -y nano nmap curl unzip
+xi -y curl
+
+
+## fetch grav
+	xi -y wget unzip
+	mkdir "grav.tmp" &&
+	wget ${_GRAV_DISTFILE} &&
+	unzip ${_GRAV_DISTFILE##*/} -d grav.tmp &&
+	cp -a "grav.tmp/grav-admin/." ${WEBROOT}/${SUB_DIR} && #mv  "grav.tmp/grav-admin/." ${WEBROOT}/${SUB_DIR} &&
+	rm -r grav.tmp || exit 1
+
+## install grav
+	## set permissions
+	chown -R ${USERNAME}:${WEBSERVER_GROUP} ${WEBROOT}/${SUB_DIR}
+	
+	cd ${WEBROOT}/${SUB_DIR}
+	find . -type f | xargs chmod 664
+	find ./bin -type f | xargs chmod 775
+	find . -type d | xargs chmod 775
+	find . -type d | xargs chmod +s
+
+	## fix curl "code0" problem (see BUGS)
+	_curlFix="\ \ method: 'fopen'"
+	sed -i "/gpm:/a  ${_curlFix}" ${WEBROOT}/${SUB_DIR}/user/config/system.yaml
+	
 
 ## install webserver + tools
 xi -y lighttpd php php-cgi php-gd
 
 	## install certain php related tools
 	
-
+	
 	## configuration: lighthttpd
 	mkdir /etc/lighttpd/conf.d
 
@@ -95,31 +118,7 @@ xi -y lighttpd php php-cgi php-gd
 #	ln -s /etc/ev/vsftpd /var/service
 
 
-## fetch grav
-
-	xi -y wget
-	mkdir "grav.tmp" &&
-	wget ${_GRAV_DISTFILE} &&
-	unzip ${_GRAV_DISTFILE##*/} -d grav.tmp &&
-	cp -a "grav.tmp/grav-admin/." ${WEBROOT}/${SUB_DIR} && #mv  "grav.tmp/grav-admin/." ${WEBROOT}/${SUB_DIR} &&
-	rm -r grav.tmp || exit 1
-
-## install grav
-	## set permissions
-	
-	chown -R ${USERNAME}:${WEBSERVER_CRED} ${WEBROOT}/${SUB_DIR}
-	
-	cd ${WEBROOT}/${SUB_DIR}
-	find . -type f | xargs chmod 664
-	find ./bin -type f | xargs chmod 775
-	find . -type d | xargs chmod 775
-	find . -type d | xargs chmod +s
-
-	## fix curl problem
-	_curlFix="\ \ method: 'fopen'"
-	sed -i "/gpm:/a  ${_curlFix}" ${WEBROOT}/${SUB_DIR}/user/config/system.yaml
-	
-	echo "---- DONE"
-	echo "now: set the umask for your user (${USERNAME})to 0002"
-	echo "if you want to work on the cli via bun/gpm or similar."
-	echo "or even better: add it to .bashrc or similar"
+echo "---- DONE"
+echo "now: set the umask for your user (${USERNAME})to 0002"
+echo "if you want to work on the cli via bun/gpm."
+echo "or even better: add it to .bashrc or similar"
