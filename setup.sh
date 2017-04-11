@@ -121,4 +121,5 @@ xi -y lighttpd php php-cgi php-gd
 	
 	echo "---- DONE"
 	echo "now: set the umask for your user (${USERNAME})to 0002"
-	echo "even better: add it to .bashrc or similar"
+	echo "if you want to work on the cli via bun/gpm or similar."
+	echo "or even better: add it to .bashrc or similar"

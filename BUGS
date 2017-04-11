@@ -1,5 +1,6 @@
 ## BUGS
 
 
- ) grav-admin: CURL error code0 during fetching files (like updates and template)
-	=> switch to fopen-alternative for now
+ ) grav-admin:
+	- CURL error code0 during fetching files (like updates and template)
+	=> switch to alternative fopen option for now (https://github.com/getgrav/grav-plugin-admin/issues/1055)
