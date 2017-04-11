@@ -35,13 +35,13 @@ xi -y curl
 	xi -y wget unzip
 	mkdir "grav.tmp" &&
 	wget ${_GRAV_DISTFILE} &&
-	unzip ${_GRAV_DISTFILE##*/} -d grav.tmp &&
-	cp -a "grav.tmp/grav-admin/." ${WEBROOT}/${SUB_DIR} && #mv  "grav.tmp/grav-admin/." ${WEBROOT}/${SUB_DIR} &&
+	unzip "${_GRAV_DISTFILE##*/}" -d grav.tmp &&
+	cp -a "grav.tmp/grav-admin/." "${WEBROOT}/${SUB_DIR}" && #mv  "grav.tmp/grav-admin/." "${WEBROOT}/${SUB_DIR}" &&
 	rm -r grav.tmp || exit 1
 
 ## install grav
 	## set permissions
-	chown -R ${USERNAME}:${WEBSERVER_GROUP} ${WEBROOT}/${SUB_DIR}
+	chown -R ${USERNAME}:${WEBSERVER_GROUP} "${WEBROOT}/${SUB_DIR}"
 	
 	cd ${WEBROOT}/${SUB_DIR}
 	find . -type f | xargs chmod 664
@@ -51,7 +51,7 @@ xi -y curl
 
 	## fix curl "code0" problem (see BUGS)
 	_curlFix="\ \ method: 'fopen'"
-	sed -i "/gpm:/a  ${_curlFix}" ${WEBROOT}/${SUB_DIR}/user/config/system.yaml
+	sed -i "/gpm:/a  ${_curlFix}" "${WEBROOT}/${SUB_DIR}/user/config/system.yaml"
 	
 
 ## install webserver + tools
