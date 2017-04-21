@@ -90,6 +90,9 @@ xi -y lighttpd php php-cgi php-gd
 #	
 #	## configuration
 #	echo "seccomp_sandbox=NO" >> /etc/vsftpd.conf #connection drop issue
+#
+#	echo "local_enable=YES" >> /etc/vsftpd.conf
+#	echo "write_enable=YES" >> /etc/vsftpd.conf
 #	
 #	## activate the service	
 #	ln -s /etc/ev/vsftpd /var/service
