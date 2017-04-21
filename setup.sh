@@ -31,29 +31,6 @@ xbps-install -Syu && xbps-install -Syu && xbps-install -y xtools
 xi -y curl
 
 
-## fetch grav
-	xi -y wget unzip
-	mkdir "grav.tmp" &&
-	wget ${_GRAV_DISTFILE} &&
-	unzip "${_GRAV_DISTFILE##*/}" -d grav.tmp &&
-	cp -a "grav.tmp/grav-admin/." "${WEBROOT}/${SUB_DIR}" && #mv  "grav.tmp/grav-admin/." "${WEBROOT}/${SUB_DIR}" &&
-	rm -r grav.tmp || exit 1
-
-## install grav
-	## set permissions
-	chown -R ${USERNAME}:${WEBSERVER_GROUP} "${WEBROOT}/${SUB_DIR}"
-	
-	cd ${WEBROOT}/${SUB_DIR}
-	find . -type f | xargs chmod 664
-	find ./bin -type f | xargs chmod 775
-	find . -type d | xargs chmod 775
-	find . -type d | xargs chmod +s
-
-	## fix curl "code0" problem (see BUGS)
-	_curlFix="\ \ method: 'fopen'"
-	sed -i "/gpm:/a  ${_curlFix}" "${WEBROOT}/${SUB_DIR}/user/config/system.yaml"
-	
-
 ## install webserver + tools
 xi -y lighttpd php php-cgi php-gd
 
@@ -116,6 +93,29 @@ xi -y lighttpd php php-cgi php-gd
 #	
 #	## activate the service	
 #	ln -s /etc/ev/vsftpd /var/service
+
+
+## fetch grav
+	xi -y wget unzip
+	mkdir "grav.tmp" &&
+	wget ${_GRAV_DISTFILE} &&
+	unzip "${_GRAV_DISTFILE##*/}" -d grav.tmp &&
+	cp -a "grav.tmp/grav-admin/." "${WEBROOT}/${SUB_DIR}" && #mv  "grav.tmp/grav-admin/." "${WEBROOT}/${SUB_DIR}" &&
+	rm -r grav.tmp || exit 1
+
+## install grav
+	## set permissions
+	chown -R ${USERNAME}:${WEBSERVER_GROUP} "${WEBROOT}/${SUB_DIR}"
+	
+	cd ${WEBROOT}/${SUB_DIR}
+	find . -type f | xargs chmod 664
+	find ./bin -type f | xargs chmod 775
+	find . -type d | xargs chmod 775
+	find . -type d | xargs chmod +s
+
+	## fix curl "code0" problem (see BUGS)
+	_curlFix="\ \ method: 'fopen'"
+	sed -i "/gpm:/a  ${_curlFix}" "${WEBROOT}/${SUB_DIR}/user/config/system.yaml"
 
 
 echo "---- DONE"
